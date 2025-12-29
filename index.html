@@ -222,23 +222,11 @@
         const TeslaCoilDiagram = () => (
             <div className="flex flex-col items-center p-4 bg-violet-50 rounded-lg my-4 border border-violet-100">
             <div className="text-sm font-bold text-violet-800 mb-2">Tesla Coil</div>
-            <svg viewBox="0 0 200 180" className="w-48 h-48">
-                <rect x="20" y="140" width="20" height="20" fill="#94a3b8" /> <text x="22" y="170" fontSize="8">HV Tx</text>
-                <line x1="40" y1="150" x2="60" y2="150" stroke="#000" />
-                <circle cx="65" cy="150" r="2" fill="#ef4444"/> <circle cx="75" cy="150" r="2" fill="#ef4444"/>
-                <text x="60" y="165" fontSize="8" fill="#ef4444">Spark Gap</text>
-                <line x1="90" y1="140" x2="90" y2="160" stroke="#3b82f6" strokeWidth="3"/>
-                <line x1="95" y1="140" x2="95" y2="160" stroke="#3b82f6" strokeWidth="3"/>
-                <text x="90" y="170" fontSize="8" fill="#3b82f6">Cp</text>
-                <path d="M 80 120 Q 120 120 120 130 Q 80 130 80 140" stroke="#d97706" fill="none" strokeWidth="2"/>
-                <text x="130" y="130" fontSize="8" fill="#d97706">L1 (Few turns)</text>
-                <path d="M 90 40 Q 110 40 110 45 Q 90 45 90 50 Q 110 50 110 55 Q 90 55 90 60 Q 110 60 110 65 Q 90 65 90 70 L 90 110" stroke="#7c3aed" fill="none" strokeWidth="1"/>
-                <text x="120" y="60" fontSize="8" fill="#7c3aed">L2 (Many turns)</text>
-                <ellipse cx="100" cy="30" rx="30" ry="10" fill="#ddd" stroke="#64748b"/>
-                <text x="100" y="32" textAnchor="middle" fontSize="8">Toroid</text>
-                <path d="M 130 30 L 160 10" stroke="#8b5cf6" strokeWidth="2" strokeDasharray="2"/>
-                <path d="M 70 30 L 40 10" stroke="#8b5cf6" strokeWidth="2" strokeDasharray="2"/>
-            </svg>
+            <img 
+                src="https://i.postimg.cc/C5wZ44MJ/Whats-App-Image-2025-12-29-at-7-55-08-PM.jpg" 
+                alt="Tesla Coil" 
+                className="w-full max-w-md h-auto object-contain rounded"
+            />
             </div>
         );
 
@@ -533,22 +521,11 @@
                     Used to test the capability of equipment (like arresters) to withstand lightning current strokes. Unlike voltage generators, these prioritize high current (kA) over high voltage.
                     </p>
                     <div className="flex justify-center p-4 bg-white border border-slate-200 rounded">
-                        <svg width="200" height="100" viewBox="0 0 200 100">
-                            <rect x="20" y="30" width="10" height="40" fill="#3b82f6"/> <text x="15" y="85" fontSize="8">C (Bank)</text>
-                            <line x1="30" y1="30" x2="60" y2="30" stroke="black"/>
-                            <circle cx="65" cy="30" r="3" fill="#ef4444"/> <circle cx="75" cy="30" r="3" fill="#ef4444"/> {/* Gap */}
-                            <line x1="80" y1="30" x2="110" y2="30" stroke="black"/>
-                            
-                            <path d="M 110 30 Q 120 10 130 30" fill="none" stroke="#d97706" strokeWidth="2"/> {/* L */}
-                            <text x="115" y="20" fontSize="8">L</text>
-                            <line x1="130" y1="30" x2="160" y2="30" stroke="black"/>
-                            
-                            <rect x="160" y="25" width="20" height="10" fill="#94a3b8"/> <text x="160" y="45" fontSize="8">Test Object</text>
-                            
-                            <line x1="180" y1="30" x2="190" y2="30" stroke="black"/>
-                            <line x1="190" y1="30" x2="190" y2="80" stroke="black"/>
-                            <line x1="190" y1="80" x2="20" y2="80" stroke="black"/>
-                        </svg>
+                        <img 
+                            src="https://i.postimg.cc/tgLWFPxq/image.png" 
+                            alt="Impulse Current Generator" 
+                            className="w-full max-w-md h-auto object-contain rounded"
+                        />
                     </div>
                     
                     <h4 className="font-bold text-slate-800">Basic Circuit:</h4>
@@ -866,18 +843,11 @@
                 answer: (
                 <div className="space-y-4">
                     <div className="flex justify-center p-4 bg-slate-50 border border-slate-200 rounded">
-                        <svg width="150" height="150" viewBox="0 0 150 150">
-                            <circle cx="75" cy="40" r="30" fill="#94a3b8" /> {/* Top Sphere */}
-                            <line x1="75" y1="40" x2="75" y2="10" stroke="black" strokeWidth="4"/>
-                            
-                            <circle cx="75" cy="110" r="30" fill="#94a3b8" /> {/* Bottom Sphere */}
-                            <line x1="75" y1="110" x2="75" y2="140" stroke="black" strokeWidth="4"/>
-                            <line x1="60" y1="140" x2="90" y2="140" stroke="black" strokeWidth="2"/>
-                            <line x1="65" y1="145" x2="85" y2="145" stroke="black" strokeWidth="2"/> {/* Ground */}
-                            
-                            <text x="90" y="80" fontSize="12" fill="#ef4444">Gap 'S'</text>
-                            <line x1="75" y1="70" x2="75" y2="80" stroke="#ef4444" strokeDasharray="2"/>
-                        </svg>
+                        <img 
+                            src="https://i.postimg.cc/7YW6C47q/image.png" 
+                            alt="Sphere Gap Measurement" 
+                            className="w-full max-w-md h-auto object-contain rounded"
+                        />
                     </div>
 
                     <h4 className="font-bold text-slate-800">Arrangement:</h4>
