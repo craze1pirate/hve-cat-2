@@ -3,1007 +3,641 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRM Valliammai Engineering College - CAT 2 Solution</title>
+    <title>Renewable Energy Sources | Solution</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- React & ReactDOM -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-    
-    <!-- Babel for JSX -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+
     <style>
         body { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
         
-        /* Animation Utilities */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        /* Smooth accordion transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out, padding 0.3s ease;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
         }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: .5; }
-        }
-        .animate-in {
-            animation: fadeIn 0.3s ease-out;
-        }
-        .slide-in-from-top-2 {
-            animation: slideDown 0.2s ease-out;
-        }
-        .animate-pulse {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        .accordion-content.open {
+            max-height: 2000px; /* Arbitrary large height */
+            opacity: 1;
         }
         
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            height: 8px;
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1; 
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8; 
-        }
+        /* Custom scrollbar for cleaner look */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #10b981; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #059669; }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-900">
+<body class="min-h-screen bg-slate-50 text-slate-900 pb-12">
 
-    <div id="root"></div>
+    <!-- Header -->
+    <header class="bg-emerald-700 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 py-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold tracking-tight flex items-center gap-2">
+                        <i data-lucide="leaf" class="w-6 h-6"></i>
+                        SRM Valliammai Engineering College
+                    </h1>
+                    <p class="text-emerald-100 text-sm mt-1 ml-8">Renewable Energy Sources | CAT - 2</p>
+                </div>
+                <div class="flex gap-2 text-xs font-mono bg-emerald-800 p-2 rounded-lg border border-emerald-600 shadow-inner">
+                    <div class="px-3 border-r border-emerald-600">
+                        <span class="block text-emerald-300">Total</span>
+                        <span class="font-bold text-lg">100m</span>
+                    </div>
+                    <div class="px-3">
+                        <span class="block text-emerald-300">Duration</span>
+                        <span class="font-bold text-lg">3 Hrs</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
-
-        // --- Icons (Replaces lucide-react imports) ---
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-4 py-8">
         
-        const IconWrapper = ({ children, className, ...props }) => (
-            <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                width="24" 
-                height="24" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                className={className} 
-                {...props}
-            >
-                {children}
-            </svg>
-        );
+        <!-- Navigation Tabs -->
+        <div class="flex space-x-2 mb-8 bg-white p-1 rounded-xl shadow-sm w-fit mx-auto md:mx-0 border border-slate-200">
+            <button onclick="switchTab('A')" id="tab-A" class="tab-btn px-6 py-2 rounded-lg text-sm font-bold transition-all duration-200">Part A</button>
+            <button onclick="switchTab('B')" id="tab-B" class="tab-btn px-6 py-2 rounded-lg text-sm font-bold transition-all duration-200">Part B</button>
+            <button onclick="switchTab('C')" id="tab-C" class="tab-btn px-6 py-2 rounded-lg text-sm font-bold transition-all duration-200">Part C</button>
+        </div>
 
-        const ChevronDown = (props) => <IconWrapper {...props}><polyline points="6 9 12 15 18 9" /></IconWrapper>;
-        const ChevronUp = (props) => <IconWrapper {...props}><polyline points="18 15 12 9 6 15" /></IconWrapper>;
-        const Info = (props) => <IconWrapper {...props}><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></IconWrapper>;
-        const Play = (props) => <IconWrapper {...props}><polygon points="5 3 19 12 5 21 5 3" /></IconWrapper>;
-        const RotateCcw = (props) => <IconWrapper {...props}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /></IconWrapper>;
+        <!-- Dynamic Content Area -->
+        <div id="content-area" class="animate-in fade-in duration-300">
+            <!-- Content injected via JS -->
+        </div>
 
-        // --- Components ---
+    </main>
+    
+    <footer class="text-center text-slate-400 text-xs py-8 border-t border-slate-200 mt-8">
+        <p class="flex items-center justify-center gap-2">
+            <i data-lucide="activity" class="w-3 h-3"></i>
+            Generated by AI Assistant • Educational Purpose Only
+        </p>
+    </footer>
 
-        const Card = ({ children, className = "" }) => (
-            <div className={`bg-white rounded-xl shadow-md overflow-hidden border border-slate-200 ${className}`}>
-                {children}
-            </div>
-        );
-
-        const Badge = ({ children, color = "blue" }) => {
-            const colors = {
-                blue: "bg-blue-100 text-blue-800",
-                red: "bg-red-100 text-red-800",
-                green: "bg-emerald-100 text-emerald-800",
-                purple: "bg-purple-100 text-purple-800",
-            };
-            return (
-                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${colors[color]}`}>
-                    {children}
-                </span>
-            );
-        };
-
-        // --- Diagrams ---
-
-        const GreinacherDiagram = () => (
-            <div className="flex flex-col items-center p-4 bg-slate-50 rounded-lg my-2 border border-slate-200">
-                <div className="text-xs font-bold text-slate-600 mb-2">Greinacher Voltage Doubler</div>
-                <img 
-                    src="https://i.postimg.cc/9QYMF9WM/image.png" 
-                    alt="Greinacher Voltage Doubler" 
-                    className="w-full max-w-xs h-auto object-contain rounded"
-                />
-            </div>
-        );
-
-        const VanDeGraaffDiagram = () => {
-            const [isOn, setIsOn] = useState(false);
-
-            return (
-                <div className="flex flex-col items-center p-4 bg-slate-50 rounded-lg my-4 border border-slate-200">
-                <div className="flex justify-between w-full items-center mb-2 px-2">
-                    <div className="text-sm font-bold text-slate-600">Van de Graaff Generator</div>
-                    <button 
-                    onClick={() => setIsOn(!isOn)}
-                    className={`flex items-center gap-1 px-3 py-1 rounded text-xs font-bold transition-colors ${isOn ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}
-                    >
-                    {isOn ? <><RotateCcw size={12}/> Stop</> : <><Play size={12}/> Start</>}
-                    </button>
-                </div>
-                
-                <svg viewBox="0 0 200 250" className="w-48 h-64">
-                    {/* Dome */}
-                    <path d="M 50 60 A 50 50 0 1 1 150 60 L 150 70 L 50 70 Z" fill="#94a3b8" stroke="#475569" />
-                    <text x="100" y="40" textAnchor="middle" fontSize="10" fill="white">Dome (HV)</text>
-                    
-                    {/* Dome Charge Accumulation */}
-                    <g className={`transition-opacity duration-1000 ${isOn ? 'opacity-100' : 'opacity-0'}`}>
-                        <text x="160" y="50" fontSize="12" fill="#ef4444" className="animate-pulse">++++++</text>
-                        <text x="30" y="50" fontSize="12" fill="#ef4444" className="animate-pulse">++++++</text>
-                        <text x="100" y="10" fontSize="12" fill="#ef4444" className="animate-pulse" textAnchor="middle">++++++</text>
-                    </g>
-
-                    {/* Column */}
-                    <rect x="70" y="70" width="60" height="150" fill="none" stroke="#cbd5e1" strokeWidth="2" />
-                    
-                    {/* Belt System */}
-                    <rect x="90" y="70" width="20" height="130" fill="#fef3c7" stroke="#d97706" />
-                    <circle cx="100" cy="80" r="8" fill="#475569" /> {/* Top Pulley */}
-                    
-                    {/* Bottom Motor */}
-                    <circle cx="100" cy="190" r="8" fill="#475569">
-                        {isOn && <animateTransform attributeName="transform" type="rotate" from="0 100 190" to="360 100 190" dur="1s" repeatCount="indefinite"/>}
-                    </circle>
-                    
-                    {/* Charges on Belt */}
-                    {isOn && (
-                    <g>
-                        <circle cx="105" cy="170" r="2" fill="#ef4444"><animate attributeName="cy" from="180" to="80" dur="2s" repeatCount="indefinite"/></circle>
-                        <circle cx="105" cy="140" r="2" fill="#ef4444"><animate attributeName="cy" from="180" to="80" dur="2s" repeatCount="indefinite" begin="0.5s"/></circle>
-                        <circle cx="105" cy="110" r="2" fill="#ef4444"><animate attributeName="cy" from="180" to="80" dur="2s" repeatCount="indefinite" begin="1s"/></circle>
-                        <circle cx="95" cy="90" r="2" fill="#cbd5e1"><animate attributeName="cy" from="80" to="180" dur="2s" repeatCount="indefinite"/></circle>
-                    </g>
-                    )}
-
-                    {/* Spray Points */}
-                    <path d="M 80 190 L 90 190" stroke="#ef4444" markerEnd="url(#arrow)" />
-                    <text x="60" y="200" fontSize="8" fill="#ef4444">Spray Comb</text>
-                    <text x="50" y="210" fontSize="8" fill="#ef4444">HV DC</text>
-                    
-                    <path d="M 120 80 L 110 80" stroke="#3b82f6" markerEnd="url(#arrow)" />
-                    <text x="125" y="85" fontSize="8" fill="#3b82f6">Collector</text>
-                    
-                    {/* Base */}
-                    <rect x="60" y="220" width="80" height="10" fill="#64748b" />
-                    <text x="100" y="235" textAnchor="middle" fontSize="8">Grounded</text>
+    <!-- JavaScript Application Logic -->
+    <script>
+        // --- Diagram Components (SVG Strings) ---
+        
+        const SolarTowerDiagram = `
+            <div class="flex flex-col items-center p-4 bg-sky-50 rounded-lg my-4 border border-sky-100">
+                <div class="text-sm font-bold text-sky-800 mb-2">Central Receiver (Solar Tower)</div>
+                <svg viewBox="0 0 300 150" class="w-full max-w-md h-40">
+                    <!-- Ground -->
+                    <rect x="0" y="130" width="300" height="20" fill="#dca54c" />
+                    <!-- Tower -->
+                    <rect x="140" y="40" width="20" height="90" fill="#64748b" />
+                    <!-- Receiver -->
+                    <rect x="135" y="20" width="30" height="20" fill="#ef4444" class="animate-pulse" />
+                    <text x="170" y="35" font-size="10" fill="#ef4444">Receiver (Molten Salt)</text>
+                    <!-- Heliostats Left -->
+                    <line x1="20" y1="130" x2="40" y2="125" stroke="#94a3b8" stroke-width="2" />
+                    <line x1="50" y1="130" x2="70" y2="125" stroke="#94a3b8" stroke-width="2" />
+                    <line x1="80" y1="130" x2="100" y2="125" stroke="#94a3b8" stroke-width="2" />
+                    <!-- Heliostats Right -->
+                    <line x1="200" y1="130" x2="220" y2="125" stroke="#94a3b8" stroke-width="2" />
+                    <line x1="230" y1="130" x2="250" y2="125" stroke="#94a3b8" stroke-width="2" />
+                    <!-- Sun Rays -->
+                    <circle cx="280" cy="20" r="15" fill="#facc15" />
+                    <path d="M 280 20 L 90 125" stroke="#facc15" stroke-width="1" stroke-dasharray="4" opacity="0.6"/>
+                    <path d="M 90 125 L 140 30" stroke="#ef4444" stroke-width="1" opacity="0.6"/>
+                    <text x="60" y="145" font-size="10" fill="white">Heliostat Field</text>
                 </svg>
-                <p className="text-xs text-center text-slate-500 mt-2">
-                    {isOn ? "Belt carries (+) charge to the dome." : "Click Start to simulate."}
-                </p>
+            </div>`;
+
+        const PVHierarchyDiagram = `
+            <div class="flex flex-col items-center p-4 bg-white border border-slate-200 rounded-lg my-4">
+                <div class="text-sm font-bold text-slate-700 mb-2">PV Hierarchy: Cell &rarr; Module &rarr; Array</div>
+                <div class="flex gap-4 items-end">
+                    <!-- Cell -->
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 h-8 bg-blue-600 border border-white shadow-sm"></div>
+                        <span class="text-xs mt-1">Cell (0.5V)</span>
+                    </div>
+                    <!-- Module -->
+                    <div class="flex flex-col items-center">
+                        <div class="grid grid-cols-2 gap-px bg-slate-300 border border-slate-400 p-px">
+                            <div class="w-4 h-4 bg-blue-600"></div><div class="w-4 h-4 bg-blue-600"></div>
+                            <div class="w-4 h-4 bg-blue-600"></div><div class="w-4 h-4 bg-blue-600"></div>
+                        </div>
+                        <span class="text-xs mt-1">Module</span>
+                    </div>
+                    <!-- Array -->
+                    <div class="flex flex-col items-center">
+                        <div class="flex gap-1">
+                            <div class="grid grid-cols-2 gap-px bg-slate-300 border border-slate-400 p-px transform scale-75">
+                                <div class="w-4 h-4 bg-blue-600"></div><div class="w-4 h-4 bg-blue-600"></div>
+                                <div class="w-4 h-4 bg-blue-600"></div><div class="w-4 h-4 bg-blue-600"></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-px bg-slate-300 border border-slate-400 p-px transform scale-75">
+                                <div class="w-4 h-4 bg-blue-600"></div><div class="w-4 h-4 bg-blue-600"></div>
+                                <div class="w-4 h-4 bg-blue-600"></div><div class="w-4 h-4 bg-blue-600"></div>
+                            </div>
+                        </div>
+                        <span class="text-xs mt-1">Array</span>
+                    </div>
                 </div>
-            );
-        };
+            </div>`;
 
-        const CockcroftWaltonDiagram = () => (
-            <div className="flex flex-col items-center p-4 bg-white border border-slate-200 rounded-lg my-4">
-            <div className="text-sm font-bold text-slate-600 mb-2">Cockcroft-Walton Ladder Network</div>
-            <img 
-                src="https://i.postimg.cc/1zDQMhjd/Screenshot-2025-12-29-192621.png" 
-                alt="Cockcroft-Walton Multiplier" 
-                className="w-full max-w-md h-auto object-contain rounded"
-            />
-            </div>
-        );
+        const PeltonWheelDiagram = `
+            <div class="flex flex-col items-center p-4 bg-slate-50 border border-slate-200 rounded-lg my-4">
+                <div class="text-sm font-bold text-slate-700 mb-2">Pelton Wheel (Impulse)</div>
+                <svg viewBox="0 0 200 120" class="w-full max-w-xs h-32">
+                    <!-- Nozzle -->
+                    <rect x="10" y="80" width="40" height="10" fill="#64748b" />
+                    <path d="M 50 85 L 100 85" stroke="#3b82f6" stroke-width="2" stroke-dasharray="2" />
+                    <text x="30" y="100" font-size="8">Nozzle</text>
+                    <!-- Wheel -->
+                    <circle cx="120" cy="60" r="40" fill="none" stroke="#475569" stroke-width="2" />
+                    <!-- Buckets -->
+                    ${[0, 45, 90, 135, 180, 225, 270, 315].map(deg => `
+                        <g transform="rotate(${deg} 120 60)">
+                            <path d="M 155 60 Q 165 60 165 55 Q 165 65 155 60" fill="#94a3b8" />
+                        </g>
+                    `).join('')}
+                    <!-- Splitting -->
+                    <path d="M 100 85 L 110 75" stroke="#3b82f6" stroke-width="1" />
+                    <path d="M 100 85 L 110 95" stroke="#3b82f6" stroke-width="1" />
+                    <text x="120" y="110" font-size="8" text-anchor="middle">Bucket splits jet</text>
+                </svg>
+            </div>`;
 
-        const MarxGeneratorDiagram = () => (
-            <div className="flex flex-col items-center p-4 bg-slate-50 rounded-lg my-4 border border-slate-200">
-            <div className="text-sm font-bold text-slate-600 mb-2">Marx Impulse Generator Principle</div>
-            <img 
-                src="https://i.postimg.cc/Bbrpmyy7/Screenshot-2025-12-29-192950.png" 
-                alt="Marx Impulse Generator" 
-                className="w-full max-w-md h-auto object-contain rounded"
-            />
-            </div>
-        );
+        const PumpedStorageDiagram = `
+            <div class="flex flex-col items-center p-4 bg-cyan-50 border border-cyan-100 rounded-lg my-4">
+                <div class="text-sm font-bold text-cyan-800 mb-2">Pumped Storage Plant</div>
+                <svg viewBox="0 0 250 150" class="w-full max-w-md h-40">
+                    <defs>
+                        <marker id="arrow" markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto" markerUnits="strokeWidth">
+                            <path d="M0,0 L0,6 L9,3 z" fill="#3b82f6" />
+                        </marker>
+                    </defs>
+                    <!-- Upper Reservoir -->
+                    <path d="M 10 30 L 80 30 L 90 50 L 0 50 Z" fill="#3b82f6" opacity="0.6"/>
+                    <text x="45" y="25" font-size="8" text-anchor="middle">Upper Reservoir</text>
+                    <!-- Lower Reservoir -->
+                    <path d="M 150 120 L 240 120 L 250 140 L 140 140 Z" fill="#3b82f6" opacity="0.6"/>
+                    <text x="200" y="145" font-size="8" text-anchor="middle">Lower Reservoir</text>
+                    <!-- Penstock -->
+                    <path d="M 80 40 L 160 110" stroke="#64748b" stroke-width="6" />
+                    <!-- Power House -->
+                    <rect x="140" y="90" width="30" height="30" fill="#e2e8f0" stroke="#475569" />
+                    <circle cx="155" cy="105" r="8" fill="#f59e0b" />
+                    <text x="180" y="100" font-size="8">Reversible Turbine</text>
+                    <!-- Arrows -->
+                    <path d="M 100 60 L 110 70" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow)" /> <text x="120" y="65" font-size="8">Generate</text>
+                    <path d="M 130 90 L 120 80" stroke="#ef4444" stroke-width="2" /> <text x="90" y="90" font-size="8" fill="#ef4444">Pump</text>
+                </svg>
+            </div>`;
 
-        const TeslaCoilDiagram = () => (
-            <div className="flex flex-col items-center p-4 bg-violet-50 rounded-lg my-4 border border-violet-100">
-            <div className="text-sm font-bold text-violet-800 mb-2">Tesla Coil</div>
-            <img 
-                src="https://i.postimg.cc/C5wZ44MJ/Whats-App-Image-2025-12-29-at-7-55-08-PM.jpg" 
-                alt="Tesla Coil" 
-                className="w-full max-w-md h-auto object-contain rounded"
-            />
-            </div>
-        );
+        const GeothermalDiagram = `
+            <div class="flex flex-col items-center p-4 bg-orange-50 border border-orange-100 rounded-lg my-4">
+                <div class="text-sm font-bold text-orange-800 mb-2">Flash Steam Geothermal</div>
+                <svg viewBox="0 0 200 150" class="w-full max-w-xs h-36">
+                    <!-- Well -->
+                    <rect x="20" y="100" width="10" height="50" fill="#475569" />
+                    <text x="25" y="145" font-size="8" fill="white" transform="rotate(-90 25,145)">Production Well</text>
+                    <!-- Flash Tank -->
+                    <rect x="50" y="60" width="30" height="40" fill="#cbd5e1" stroke="black" />
+                    <text x="65" y="80" font-size="6" text-anchor="middle">Separator</text>
+                    <line x1="30" y1="100" x2="50" y2="80" stroke="black" />
+                    <!-- Turbine -->
+                    <path d="M 100 40 L 120 30 L 120 50 Z" fill="#94a3b8" />
+                    <text x="110" y="25" font-size="8">Turbine</text>
+                    <line x1="80" y1="60" x2="100" y2="40" stroke="#ef4444" stroke-width="2" />
+                    <text x="90" y="55" font-size="6" fill="#ef4444">Steam</text>
+                    <!-- Generator -->
+                    <rect x="130" y="30" width="20" height="20" fill="#fbbf24" />
+                    <line x1="120" y1="40" x2="130" y2="40" stroke="black" />
+                    <!-- Water return -->
+                    <line x1="65" y1="100" x2="65" y2="130" stroke="#3b82f6" stroke-width="2" />
+                    <text x="80" y="120" font-size="6" fill="#3b82f6">Brine (Re-inject)</text>
+                </svg>
+            </div>`;
 
-        const RogowskiDiagram = () => (
-            <div className="flex flex-col items-center p-4 bg-white border border-slate-200 rounded-lg my-4">
-            <div className="text-sm font-bold text-slate-600 mb-2">Rogowski Coil</div>
-            <svg viewBox="0 0 200 150" className="w-48 h-36">
-                <rect x="90" y="20" width="20" height="110" fill="#94a3b8" />
-                <text x="95" y="140" fontSize="10" fontWeight="bold">I(t)</text>
-                <path d="M 100 100 L 100 120" stroke="black" markerEnd="url(#arrow)"/>
-                <ellipse cx="100" cy="75" rx="60" ry="30" fill="none" stroke="#d97706" strokeWidth="2" strokeDasharray="4"/>
-                <text x="165" y="75" fontSize="10" fill="#d97706">Air Core Coil</text>
-                <path d="M 160 75 L 180 75" stroke="#d97706" />
-                <text x="170" y="90" fontSize="8">To Integrator</text>
-                <text x="20" y="30" fontSize="8" fill="#64748b">V_out &propto; di/dt</text>
-            </svg>
-            </div>
-        );
-
-        const GeneratingVoltmeterDiagram = () => (
-            <div className="flex flex-col items-center p-4 bg-slate-50 border border-slate-200 rounded-lg my-4">
-            <div className="text-sm font-bold text-slate-700 mb-2">Generating Voltmeter Principle</div>
-            <img 
-                src="https://i.postimg.cc/XvPsZp8k/Screenshot-2025-12-29-193220.png" 
-                alt="Generating Voltmeter" 
-                className="w-full max-w-md h-auto object-contain rounded"
-            />
-            <p className="text-xs text-center text-slate-500 mt-1">Rotor varies capacitance C(t) between HV and Sense plate.</p>
-            </div>
-        );
-
-        const MagnetoOpticDiagram = () => (
-            <div className="flex flex-col items-center p-4 bg-white border border-slate-200 rounded-lg my-4">
-            <div className="text-sm font-bold text-slate-700 mb-2">Magneto-Optic (Faraday Effect)</div>
-            <svg viewBox="0 0 250 120" className="w-full max-w-md h-36">
-                <circle cx="125" cy="60" r="10" fill="#94a3b8" stroke="black"/>
-                <text x="125" y="63" textAnchor="middle" fontSize="8">I (into page)</text>
-                <circle cx="125" cy="60" r="40" fill="none" stroke="#d97706" strokeDasharray="4"/>
-                <text x="125" y="30" textAnchor="middle" fontSize="8" fill="#d97706">B Field</text>
-                <path d="M 50 60 L 100 60 A 25 25 0 1 1 150 60 L 200 60" fill="none" stroke="#3b82f6" strokeWidth="2"/>
-                <rect x="20" y="50" width="30" height="20" fill="#ef4444"/> <text x="35" y="85" textAnchor="middle" fontSize="8">Laser</text>
-                <rect x="60" y="50" width="10" height="20" fill="#cbd5e1"/> <text x="65" y="45" textAnchor="middle" fontSize="8">Polarizer</text>
-                <rect x="180" y="50" width="10" height="20" fill="#cbd5e1"/> <text x="185" y="45" textAnchor="middle" fontSize="8">Analyzer</text>
-                <rect x="200" y="50" width="30" height="20" fill="#10b981"/> <text x="215" y="85" textAnchor="middle" fontSize="8">Detector</text>
-                <line x1="75" y1="55" x2="75" y2="65" stroke="black" strokeWidth="1.5"/>
-                <line x1="175" y1="55" x2="178" y2="68" stroke="black" strokeWidth="1.5"/>
-                <text x="175" y="35" fontSize="8" fill="#3b82f6">Rotation &theta;</text>
-            </svg>
-            </div>
-        );
-
-        const ElectrostaticVoltmeterDiagram = () => (
-            <div className="flex flex-col items-center p-4 bg-slate-50 border border-slate-200 rounded-lg my-4">
-            <div className="text-sm font-bold text-slate-700 mb-2">Electrostatic Voltmeter (Attracted Disc)</div>
-            <img 
-                src="https://i.postimg.cc/vmxWNX7R/Screenshot-2025-12-29-193402.png" 
-                alt="Electrostatic Voltmeter" 
-                className="w-full max-w-md h-auto object-contain rounded"
-            />
-            </div>
-        );
-
-        // --- Content Data ---
+        // --- Data ---
 
         const partAQuestions = [
-            {
-                id: "a1", number: 1, part: "A",
-                question: "What are the specifications for Lightning impulse voltage?",
-                answer: (
-                <span>
-                    Standard Lightning Impulse Voltage is defined as <strong>1.2/50 μs</strong>.
-                    <br/>- <strong>Front Time (T1):</strong> 1.2 μs ± 30% (Time to reach peak).
-                    <br/>- <strong>Tail Time (T2):</strong> 50 μs ± 20% (Time to decay to 50% peak).
-                </span>
-                )
-            },
-            {
-                id: "a2", number: 2, part: "A",
-                question: "Write the different forms of high voltages required for the testing of electrical apparatus",
-                answer: (
-                <ul className="list-disc pl-5 space-y-1">
-                    <li>High Voltage DC (HVDC).</li>
-                    <li>Power Frequency High Voltage AC (HVAC).</li>
-                    <li>High Frequency High Voltage AC.</li>
-                    <li>Impulse Voltages (Lightning and Switching surges).</li>
-                </ul>
-                )
-            },
-            {
-                id: "a3", number: 3, part: "A",
-                question: "What is Tesla coil?",
-                answer: "An air-cored resonant transformer used to produce high frequency, high voltage oscillations. It works on the principle of resonance between the primary and secondary LC circuits."
-            },
-            {
-                id: "a4", number: 4, part: "A",
-                question: "Draw the Greinacher voltage doubler circuit.",
-                answer: <GreinacherDiagram />
-            },
-            {
-                id: "a5", number: 5, part: "A",
-                question: "List out the components of multistage impulse generator.",
-                answer: (
-                <ul className="list-disc pl-5 space-y-1">
-                    <li>DC Charging Unit.</li>
-                    <li>Charging Resistors.</li>
-                    <li>Generator Capacitors (Stage capacitors).</li>
-                    <li>Spark Gaps (Sphere gaps).</li>
-                    <li>Wave shaping resistors (Front and Tail resistors).</li>
-                </ul>
-                )
-            },
-            {
-                id: "a6", number: 6, part: "A",
-                question: "What is Rogowski coil?",
-                answer: "A helical coil wound on a non-magnetic (air) core that surrounds the current-carrying conductor. It measures high impulse currents. The output voltage is proportional to the rate of change of current (di/dt)."
-            },
-            {
-                id: "a7", number: 7, part: "A",
-                question: "Enumerate the reason for using Sphere type electrodes in HV measurement",
-                answer: "Sphere gaps provide a uniform electric field between electrodes. The breakdown voltage is highly predictable and consistent for a given gap spacing and sphere diameter, making them a standard for calibration."
-            },
-            {
-                id: "a8", number: 8, part: "A",
-                question: "Give the basic principle of Electrostatic voltmeter.",
-                answer: (
-                <span>
-                    It works on the principle of electrostatic force of attraction/repulsion between charged electrodes. The force is proportional to the square of the applied voltage (<span>F &propto; V<sup>2</sup></span>), allowing it to measure both AC and DC RMS values.
-                </span>
-                )
-            },
-            {
-                id: "a9", number: 9, part: "A",
-                question: "Suggest the different methods to measure the high D.C. Voltages.",
-                answer: (
-                <ul className="list-disc pl-5 space-y-1">
-                    <li>Series Resistance Micro-ammeter.</li>
-                    <li>Resistance Potential Divider.</li>
-                    <li>Generating Voltmeter.</li>
-                    <li>Sphere Gap method.</li>
-                </ul>
-                )
-            },
-            {
-                id: "a10", number: 10, part: "A",
-                question: "List the factors that are influencing the peak voltage measurement using sphere gap.",
-                answer: (
-                <ul className="list-disc pl-5 space-y-1">
-                    <li>Air Density (Pressure and Temperature).</li>
-                    <li>Humidity.</li>
-                    <li>Nearby earthed objects (Proximity effect).</li>
-                    <li>Polarity of the voltage.</li>
-                    <li>Dust particles on the sphere surface.</li>
-                </ul>
-                )
-            },
+            { id: "a1", number: 1, question: "Define solar constant.", answer: "The solar constant is the rate at which solar energy is received per unit area on a surface perpendicular to the sun's rays, at the average Earth-Sun distance outside the atmosphere. Its value is approximately 1367 W/m²." },
+            { id: "a2", number: 2, question: "Summarize phase change material (PCM)", answer: "PCMs are substances that absorb and release thermal energy during the process of melting and freezing (phase transition). They provide high energy storage density at a nearly constant temperature (Latent Heat Storage). Example: Paraffin wax, Glauber's salt." },
+            { id: "a3", number: 3, question: "List the different types of PV Systems.", answer: `<ul class="list-disc pl-5 space-y-1"><li>Stand-alone (Off-grid) Systems.</li><li>Grid-Connected (On-grid) Systems.</li><li>Hybrid Systems (PV + Diesel/Wind).</li></ul>` },
+            { id: "a4", number: 4, question: "Classify the application of solar PV System.", answer: `<ul class="list-disc pl-5 space-y-1"><li><strong>Consumer Electronics:</strong> Calculators, watches.</li><li><strong>Residential:</strong> Solar home lighting, water pumping.</li><li><strong>Industrial/Commercial:</strong> Telecommunications, satellites, traffic signals.</li><li><strong>Power Generation:</strong> Large scale solar farms.</li></ul>` },
+            { id: "a5", number: 5, question: "Describe the solar thermal power plant.", answer: "A power plant that uses concentrated solar radiation to heat a working fluid (water/oil/salt), producing steam to drive a turbine and generator. Types include Parabolic Trough, Power Tower, and Dish Stirling." },
+            { id: "a6", number: 6, question: "Give some of the organic materials used in biomass plant.", answer: "Wood, agricultural residues (straw, husks), animal manure (cow dung), sewage sludge, municipal solid waste, and dedicated energy crops (switchgrass)." },
+            { id: "a7", number: 7, question: "What is geothermal energy?", answer: "Thermal energy generated and stored within the Earth. It originates from the formation of the planet and the radioactive decay of materials. It can be recovered as steam or hot water." },
+            { id: "a8", number: 8, question: "Prepare the list of various application of geothermal energy.", answer: `<ul class="list-disc pl-5 space-y-1"><li>Electricity Generation.</li><li>Direct Space Heating (District heating).</li><li>Greenhouse heating.</li><li>Industrial process heat (drying).</li><li>Balneology (Hot springs/Spas).</li></ul>` },
+            { id: "a9", number: 9, question: "List various types of hydropower plants.", answer: `<ul class="list-disc pl-5 space-y-1"><li>Storage (Reservoir) Plant.</li><li>Run-of-River Plant.</li><li>Pumped Storage Plant.</li><li>Tidal Power Plant.</li></ul>` },
+            { id: "a10", number: 10, question: "Summarize various types of geothermal power plants used.", answer: `<ul class="list-disc pl-5 space-y-1"><li>Dry Steam Plants (vapor dominated).</li><li>Flash Steam Plants (liquid dominated).</li><li>Binary Cycle Plants (for moderate temperatures).</li></ul>` },
         ];
 
         const partBQuestions = [
-        {
-            id: "b11", number: 11, part: "B",
-            question: "HVDC Generation Techniques",
-            answer: null,
-            subQuestions: [
             {
-                label: "(a) Explain the construction and operation of Van de Graaff generator.",
-                question: "Van de Graaff Generator",
-                answer: (
-                <div className="space-y-4">
-                    <VanDeGraaffDiagram />
-                    <h4 className="font-bold text-slate-800">Principle:</h4>
-                    <p className="text-sm text-slate-700">Based on the electrostatic phenomenon that charge sprayed onto a moving belt is carried to a high-voltage terminal and accumulates on the outer surface of a hollow conductor.</p>
-                    
-                    <h4 className="font-bold text-slate-800 mt-2">Construction:</h4>
-                    <ul className="list-disc pl-5 text-sm text-slate-700 space-y-1">
-                    <li><strong>High Voltage Terminal:</strong> A large hollow metal sphere mounted on an insulating column.</li>
-                    <li><strong>Belt:</strong> An insulating belt (silk/rubber) driven by a motor at the bottom.</li>
-                    <li><strong>Spray Comb:</strong> Sharp metal points at the bottom connected to a DC source (10-100kV) to ionize air and spray charge onto the belt.</li>
-                    <li><strong>Collector Comb:</strong> Sharp points at the top connected to the inside of the dome to collect charge.</li>
-                    </ul>
-
-                    <h4 className="font-bold text-slate-800 mt-2">Operation:</h4>
-                    <ol className="list-decimal pl-5 text-sm text-slate-700 space-y-1">
-                    <li>The lower spray comb creates a corona discharge, spraying positive charge onto the moving belt.</li>
-                    <li>The belt carries this charge upwards into the hollow sphere.</li>
-                    <li>The upper collector comb collects the charge. Since charge resides on the outer surface of a conductor, it flows to the outside of the dome.</li>
-                    <li>Potential accumulates continuously until breakdown of surrounding air occurs or equilibrium with leakage is reached.</li>
-                    <li>Voltage: <span>V = Q/C</span>. Can reach several million volts.</li>
-                    </ol>
-                </div>
-                )
-            },
-            {
-                label: "(b) With a neat sketch explain the Cockcroft - Walton voltage multiplier circuit for generation of high DC voltages.",
-                question: "Cockcroft-Walton Multiplier",
-                answer: (
-                <div className="space-y-4">
-                    <CockcroftWaltonDiagram />
-                    <p className="text-sm text-slate-700">
-                    A voltage multiplier circuit converts AC power into a high DC voltage. It uses a ladder network of capacitors and diodes.
-                    </p>
-                    
-                    <h4 className="font-bold text-slate-800 mt-2">Operation (Stage by Stage):</h4>
-                    <div className="bg-slate-50 p-3 rounded border border-slate-200 space-y-2 text-sm">
-                    <p><strong>1. Charging C1:</strong> During the negative half cycle, D1 conducts and charges C1 to <span>V<sub>max</sub></span>.</p>
-                    <p><strong>2. Transfer to C2:</strong> During the positive half cycle, the source voltage (Vmax) adds to voltage across C1 (Vmax). D2 conducts, charging C2 to <span>2V<sub>max</sub></span>.</p>
-                    <p><strong>3. Next Stages:</strong> This process repeats. The oscillating column (C1, C3) transfers charge to the smoothing column (C2, C4). Each capacitor in the smoothing column holds 2Vmax.</p>
-                    </div>
-
-                    <h4 className="font-bold text-slate-800 mt-2">Key Equations:</h4>
-                    <ul className="list-disc pl-5 text-sm text-slate-700">
-                    <li>Total Output Voltage (No Load): <span>V<sub>out</sub> = 2n V<sub>max</sub></span> (where n is number of stages).</li>
-                    <li><strong>Ripple:</strong> Voltage drop usually increases with the square of the number of stages (<span>&delta;V &propto; n<sup>3</sup></span>), limiting the practical number of stages.</li>
-                    </ul>
-                </div>
-                )
-            }
-            ]
-        },
-        {
-            id: "b12", number: 12, part: "B",
-            question: "HVAC & Impulse Generation",
-            answer: null,
-            subQuestions: [
-            {
-                label: "(a) Discuss elaborately the principle and operation of Cascaded transformers for generating high AC voltages.",
-                question: "Cascaded Transformers",
-                answer: (
-                <div className="space-y-4">
-                    <p className="text-sm text-slate-700">
-                    Generating extremely high AC voltages (e.g., {'>'} 400kV) with a single transformer is impractical due to insulation requirements. Cascading connects transformers in series to split the voltage stress.
-                    </p>
-                    
-                    <div className="flex justify-center p-4 bg-white rounded border border-slate-200">
-                        <img 
-                            src="https://i.postimg.cc/CLR9mpZm/Screenshot-2025-12-29-192824.png" 
-                            alt="Cascaded Transformer" 
-                            className="w-full max-w-md h-auto object-contain rounded"
-                        />
-                    </div>
-
-                    <h4 className="font-bold text-slate-800">Operation:</h4>
-                    <ul className="list-disc pl-5 text-sm text-slate-700 space-y-2">
-                    <li><strong>Stage 1 (Ground Potential):</strong> Primary is fed from the supply. Secondary produces voltage V. The tank is grounded. It has a tertiary winding (excitation winding) to power the second stage.</li>
-                    <li><strong>Stage 2 (Floating):</strong> The tank of the second transformer is insulated from ground and sits at potential V. Its primary is powered by the tertiary of Stage 1. Its secondary adds another V. Total = 2V.</li>
-                    <li><strong>Stage 3:</strong> Similarly insulated at 2V potential, adding another V to make 3V.</li>
-                    </ul>
-                    
-                    <div className="bg-blue-50 p-2 rounded text-xs text-blue-800 mt-2">
-                    <strong>Advantage:</strong> Compact insulation. Only the first unit requires full exciting power.
-                    </div>
-                </div>
-                )
-            },
-            {
-                label: "(b) Give the Marx circuit arrangement for multistage impulse generators.",
-                question: "Marx Impulse Generator",
-                answer: (
-                <div className="space-y-4">
-                    <p className="text-sm text-slate-700">
-                    The Marx generator is the standard circuit for producing high voltage lightning impulses.
-                    </p>
-                    <MarxGeneratorDiagram />
-                    
-                    <h4 className="font-bold text-slate-800 mt-2">Principle:</h4>
-                    <p className="text-sm text-slate-700">
-                    <strong>"Charge in Parallel, Discharge in Series"</strong>
-                    </p>
-
-                    <h4 className="font-bold text-slate-800 mt-2">Operation:</h4>
-                    <ol className="list-decimal pl-5 text-sm text-slate-700 space-y-2">
-                    <li><strong>Charging:</strong> Capacitors (C) are charged in parallel from a DC source through high-value charging resistors (R). The spark gaps are open. All capacitor terminals effectively sit near ground or charging voltage.</li>
-                    <li><strong>Firing:</strong> The first spark gap is triggered (broken down). This causes a voltage surge that overstresses the second gap, causing it to break down, and so on (cascading breakdown).</li>
-                    <li><strong>Discharge:</strong> Once all gaps fire, they act as short circuits. The capacitors are now effectively connected in series. The output voltage is <span>V<sub>out</sub> = n &times; V<sub>dc</sub></span>.</li>
-                    <li><strong>Wave Shaping:</strong> Series resistors (R1) control the front time, and parallel resistors (R2) control the tail time of the impulse.</li>
-                    </ol>
-                </div>
-                )
-            }
-            ]
-        },
-        {
-            id: "b13", number: 13, part: "B",
-            question: "High Current Generation & Measurement",
-            answer: null,
-            subQuestions: [
-            {
-                label: "(a) Discuss elaborately the principle and operation of impulse current generator.",
-                question: "Impulse Current Generator",
-                answer: (
-                <div className="space-y-4">
-                    <p className="text-sm text-slate-700">
-                    Used to test the capability of equipment (like arresters) to withstand lightning current strokes. Unlike voltage generators, these prioritize high current (kA) over high voltage.
-                    </p>
-                    <div className="flex justify-center p-4 bg-white border border-slate-200 rounded">
-                        <img 
-                            src="https://i.postimg.cc/tgLWFPxq/image.png" 
-                            alt="Impulse Current Generator" 
-                            className="w-full max-w-md h-auto object-contain rounded"
-                        />
-                    </div>
-                    
-                    <h4 className="font-bold text-slate-800">Basic Circuit:</h4>
-                    <p className="text-sm text-slate-700">Usually a simple R-L-C circuit where R and L are minimized to allow high current.</p>
-                    <ul className="list-disc pl-5 text-sm text-slate-700">
-                    <li><strong>Capacitor Bank (C):</strong> Stores large energy (E = 0.5 CV²). Usually parallel capacitors arranged for high capacitance.</li>
-                    <li><strong>Spark Gap:</strong> Acts as the switch.</li>
-                    <li><strong>Inductance (L):</strong> Mostly inherent inductance of leads/capacitors. Kept minimum for fast rise time.</li>
-                    </ul>
-                    
-                    <h4 className="font-bold text-slate-800">Types of Waveforms:</h4>
-                    <ul className="list-disc pl-5 text-sm text-slate-700">
-                        <li><strong>Rectangular waves:</strong> Produced using a Pulse Forming Network (PFN) or artificial line. Used for long duration surge testing.</li>
-                        <li><strong>Exponential waves:</strong> 4/10 μs or 8/20 μs standard currents.</li>
-                    </ul>
-                </div>
-                )
-            },
-            {
-                label: "(b) Tabulate and outline the methods used for measurement of High Voltages and High current",
-                question: "Measurement Methods Table",
-                answer: (
-                <div className="overflow-x-auto">
-                    <table className="min-w-full text-sm text-left text-slate-700">
-                    <thead className="text-xs text-slate-700 uppercase bg-slate-100">
-                        <tr>
-                        <th className="px-4 py-2">Parameter</th>
-                        <th className="px-4 py-2">DC Voltage</th>
-                        <th className="px-4 py-2">AC Voltage (50Hz)</th>
-                        <th className="px-4 py-2">Impulse Voltage</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr className="bg-white border-b">
-                        <td className="px-4 py-2 font-medium">Method 1</td>
-                        <td className="px-4 py-2">Series Resistance Microammeter</td>
-                        <td className="px-4 py-2">Series Impedance Ammeter</td>
-                        <td className="px-4 py-2">Potential Dividers (R or C) with CRO</td>
-                        </tr>
-                        <tr className="bg-slate-50 border-b">
-                        <td className="px-4 py-2 font-medium">Method 2</td>
-                        <td className="px-4 py-2">Resistance Potential Divider</td>
-                        <td className="px-4 py-2">Capacitance Potential Divider</td>
-                        <td className="px-4 py-2">Sphere Gaps (Peak only)</td>
-                        </tr>
-                        <tr className="bg-white border-b">
-                        <td className="px-4 py-2 font-medium">Method 3</td>
-                        <td className="px-4 py-2">Generating Voltmeter</td>
-                        <td className="px-4 py-2">Electrostatic Voltmeter</td>
-                        <td className="px-4 py-2">-</td>
-                        </tr>
-                        <tr className="bg-slate-50 border-b">
-                        <td className="px-4 py-2 font-medium">Method 4</td>
-                        <td className="px-4 py-2">Sphere Gaps</td>
-                        <td className="px-4 py-2">Sphere Gaps</td>
-                        <td className="px-4 py-2">-</td>
-                        </tr>
-                    </tbody>
-                    </table>
-
-                    <div className="mt-6">
-                    <h5 className="font-bold text-slate-800 mb-2">High Current Measurement</h5>
-                    <ul className="list-disc pl-5 text-sm text-slate-700">
-                        <li><strong>DC Current:</strong> Hall Effect Sensors, Shunts.</li>
-                        <li><strong>AC High Current:</strong> Current Transformers (CT).</li>
-                        <li><strong>Impulse Current:</strong> Rogowski Coil, Non-inductive Shunts (Coaxial), Magneto-optic effect (Faraday effect).</li>
-                    </ul>
-                    </div>
-                </div>
-                )
-            }
-            ]
-        },
-        {
-            id: "b14", number: 14, part: "B",
-            question: "Advanced Measurement Techniques",
-            answer: null,
-            subQuestions: [
-            {
-                label: "(a) Describe the construction, principle of operation of an Generating voltmeter and give its application and limitations.",
-                question: "Generating Voltmeter",
-                answer: (
-                <div className="space-y-4">
-                    <GeneratingVoltmeterDiagram />
-                    <h4 className="font-bold text-slate-800">Principle:</h4>
-                    <p className="text-sm text-slate-700">
-                    A variable capacitor electrostatic instrument. It generates a current proportional to the voltage being measured by varying the capacitance between the high voltage electrode and the measuring electrode periodically.
-                    <br/>
-                    Formula: <span>I = V &frac;{`dC`}{`dt`}</span>
-                    </p>
-
-                    <h4 className="font-bold text-slate-800 mt-2">Construction:</h4>
-                    <ul className="list-disc pl-5 text-sm text-slate-700">
-                    <li><strong>High Voltage Electrode:</strong> The source voltage.</li>
-                    <li><strong>Sensing/Stator Electrode:</strong> Segmented metal plate connected to ground via a microammeter.</li>
-                    <li><strong>Rotor/Driven Electrode:</strong> A grounded metal vane driven by a synchronous motor (constant speed) that periodically shields and exposes the sensing electrode to the HV field.</li>
-                    </ul>
-
-                    <h4 className="font-bold text-slate-800 mt-2">Applications & Limitations:</h4>
-                    <div className="grid gap-2 md:grid-cols-2 text-sm">
-                        <div className="bg-green-50 p-2 rounded text-green-800">
-                        <strong>Applications:</strong> Measuring Van de Graaff generator voltages and other high impedance DC sources. No power drawn from source.
-                        </div>
-                        <div className="bg-red-50 p-2 rounded text-red-800">
-                        <strong>Limitations:</strong> Requires a constant speed motor. Calibration depends on geometry.
-                        </div>
-                    </div>
-                </div>
-                )
-            },
-            {
-                label: "(b) Briefly explain arrangements of Rogowski coil and magneto optic methods for high current measurements.",
-                question: "Rogowski Coil & Magneto Optic",
-                answer: (
-                <div className="space-y-4">
-                    <h4 className="font-bold text-indigo-800">1. Rogowski Coil</h4>
-                    <RogowskiDiagram />
-                    <p className="text-sm text-slate-700">
-                    <strong>Arrangement:</strong> A toroidal coil wound on a non-magnetic core encircles the conductor carrying current <span>i(t)</span>.
-                    <br/><strong>Principle:</strong> The mutual inductance is air-cored. The voltage induced is <span>e(t) = M di/dt</span>.
-                    <br/><strong>Operation:</strong> The output is connected to an <strong>Integrating circuit</strong> (RC network or Op-Amp) to recover the current waveform <span>i(t)</span> from <span>di/dt</span>.
-                    </p>
-
-                    <h4 className="font-bold text-indigo-800 mt-4">2. Magneto-Optic Method (Faraday Effect)</h4>
-                    <MagnetoOpticDiagram />
-                    <p className="text-sm text-slate-700">
-                    <strong>Principle:</strong> When polarized light passes through a transparent material in a magnetic field (created by the high current), the plane of polarization rotates.
-                    <br/><strong>Angle of Rotation:</strong> <span>&theta; = V &middot; B &middot; l</span> (where V is Verdet constant, B is magnetic field, l is length).
-                    <br/><strong>Arrangement:</strong> A laser beam is passed through a fiber optic cable wrapped around the conductor. A polarization detector at the receiving end measures the shift, which is directly proportional to the current.
-                    <br/><strong>Advantage:</strong> Complete electrical isolation. Excellent for EHV systems.
-                    </p>
-                </div>
-                )
-            }
-            ]
-        },
-        {
-            id: "b15", number: 15, part: "B",
-            question: "Electrostatic Voltmeter & Problem",
-            answer: null,
-            subQuestions: [
-            {
-                label: "(a) Describe the construction, principle of operation of an Electrostatic voltmeter.",
-                question: "Electrostatic Voltmeter",
-                answer: (
-                <div className="space-y-4">
-                    <ElectrostaticVoltmeterDiagram />
-                    <h4 className="font-bold text-slate-800">Principle:</h4>
-                    <p className="text-sm text-slate-700">
-                    Operates on the force of attraction between two charged plates. The force is given by <span>F = &frac{1}{2} V<sup>2</sup> &frac;{`dC`}{`dx`}</span>. Since force depends on V<sup>2</sup>, it measures RMS voltage for AC and actual value for DC.
-                    </p>
-                    <h4 className="font-bold text-slate-800 mt-2">Construction (Attracted Disc Type):</h4>
-                    <ul className="list-disc pl-5 text-sm text-slate-700">
-                    <li><strong>Fixed Plate:</strong> A high voltage metal ring with a central opening (Guard ring structure).</li>
-                    <li><strong>Moving Plate:</strong> A central disc suspended by a spring or balance arm in the center of the guard ring.</li>
-                    <li><strong>Shielding:</strong> Entire assembly is placed in a grounded enclosure to prevent external interference.</li>
-                    </ul>
-                    <div className="bg-yellow-50 p-2 rounded text-xs text-yellow-800 mt-2">
-                    <strong>Key Feature:</strong> Ideally suited for Absolute Voltage Measurement (Calibration standards) as force relies only on geometry (permittivity, area, distance).
-                    </div>
-                </div>
-                )
-            },
-            {
-                label: "(b) Numerical Problem: Generating Voltmeter Design",
-                question: "Generating Voltmeter Capacitance",
-                answer: (
-                    <div className="space-y-6 text-slate-800">
-                        {/* Problem Data Note */}
-                        <div className="bg-blue-50 p-4 rounded border-l-4 border-blue-500 text-sm">
-                            <div className="font-bold text-blue-800 flex items-center gap-2 mb-1">
-                                <Info size={16}/> Given Data
-                            </div>
-                            <ul className="list-disc pl-5 mt-1 space-y-1">
-                                <li>Voltage Range: <i className="font-serif">V</i> = 20 kV to 200 kV</li>
-                                <li>Current Range: <i className="font-serif">I</i> = 2 &mu;A to 25 &mu;A</li>
-                                <li>Motor Speed (assumed standard): <i className="font-serif">N</i> = 1500 rpm</li>
+                id: "b11", number: 11, question: "Solar Thermal Power & Impact",
+                subQuestions: [
+                    {
+                        id: "b11-a",
+                        label: "(a) Discuss the construction and working principle of Central Receiver power plants.",
+                        answer: `
+                        <div class="space-y-4">
+                            ${SolarTowerDiagram}
+                            <h4 class="font-bold text-emerald-800">1. Principle</h4>
+                            <p class="text-sm text-slate-700">Solar radiation is concentrated by a field of heliostats (movable mirrors) onto a central receiver mounted on top of a tall tower. The high concentration ratio produces very high temperatures (>500°C).</p>
+                            <h4 class="font-bold text-emerald-800 mt-2">2. Construction</h4>
+                            <ul class="list-disc pl-5 text-sm text-slate-700 space-y-1">
+                                <li><strong>Heliostats:</strong> Large, computer-controlled mirrors that track the sun on two axes to reflect light continuously onto the receiver.</li>
+                                <li><strong>Receiver:</strong> A heat exchanger located at the top of the tower. It absorbs reflected energy and transfers it to a heat transfer fluid (HTF) like molten salt or water/steam.</li>
+                                <li><strong>Tower:</strong> Concrete structure supporting the receiver high above the field to minimize shading and blocking.</li>
+                                <li><strong>Storage System:</strong> Often uses hot molten salt tanks to store heat for night-time operation.</li>
                             </ul>
-                        </div>
-
-                        {/* Solution Container */}
-                        <div className="bg-white p-6 rounded-lg shadow-sm border border-slate-200 font-serif">
-                            <h4 className="font-sans font-bold text-lg text-slate-900 border-b pb-2 mb-4">Solution</h4>
-
-                            {/* Governing Equation */}
-                            <div className="mb-6">
-                                <strong className="font-sans text-slate-700 block mb-2">Governing Principle:</strong>
-                                <p className="mb-2 text-sm font-sans text-slate-600">The current generated is proportional to the rate of change of capacitance:</p>
-                                <div className="bg-slate-50 border border-slate-100 rounded py-3 text-center text-xl">
-                                    <i>I</i>(t) = <i>V</i> <div className="inline-block text-center align-middle mx-1"><div className="border-b border-black">d<i>C</i></div><div>d<i>t</i></div></div>
+                            <h4 class="font-bold text-emerald-800 mt-2">3. Working</h4>
+                            <p class="text-sm text-slate-700">Sunlight hits the heliostats &rarr; Reflected to Receiver &rarr; Heats HTF (Molten Salt) &rarr; Hot Salt stored or sent to Steam Generator &rarr; Steam drives Turbine &rarr; Electricity.</p>
+                        </div>`
+                    },
+                    {
+                        id: "b11-b",
+                        label: "(b) Examine the environmental impact of solar power generation",
+                        answer: `
+                        <div class="space-y-3">
+                            <div class="grid gap-4 md:grid-cols-2">
+                                <div class="bg-green-50 p-3 rounded">
+                                    <h5 class="font-bold text-green-800 text-sm">Positive Impacts</h5>
+                                    <ul class="list-disc pl-4 text-xs text-slate-700 mt-1">
+                                        <li><strong>Zero Emissions:</strong> No greenhouse gases (CO2, NOx) during operation.</li>
+                                        <li><strong>Renewable:</strong> Inexhaustible resource.</li>
+                                        <li><strong>Water Saving:</strong> PV requires no water for cooling.</li>
+                                    </ul>
                                 </div>
-                                <p className="mt-2 text-sm font-sans text-slate-600">
-                                    For a simplified synchronous measurement, the relationship is:
-                                    <br/>
-                                    <span className="font-serif text-lg ml-4 block mt-1 text-center"><i>I</i> &approx; <i>V C<sub>m</sub> &omega;</i></span>
-                                </p>
-                            </div>
-
-                            {/* Calculation Steps */}
-                            <div className="space-y-4">
-                                <strong className="font-sans text-slate-700 block">1. Calculation of Effective Conductance (<i className="font-serif">G = I/V</i>):</strong>
-                                
-                                <div className="pl-4 border-l-2 border-indigo-100 space-y-4">
-                                    <p>We check the sensitivity at both limits of the range.</p>
-                                    
-                                    <div>
-                                        <p className="italic">Case 1 (Lower Limit):</p>
-                                        <div className="text-lg my-1">
-                                            <i>G<sub>1</sub></i> = 
-                                            <div className="inline-block text-center align-middle mx-1">
-                                                <div className="border-b border-black">2 &mu;A</div>
-                                                <div>20 kV</div>
-                                            </div>
-                                            =
-                                            <div className="inline-block text-center align-middle mx-1">
-                                                <div className="border-b border-black">2 &times; 10<sup>-6</sup></div>
-                                                <div>20 &times; 10<sup>3</sup></div>
-                                            </div>
-                                            = 100 pS
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <p className="italic">Case 2 (Upper Limit):</p>
-                                        <div className="text-lg my-1">
-                                            <i>G<sub>2</sub></i> = 
-                                            <div className="inline-block text-center align-middle mx-1">
-                                                <div className="border-b border-black">25 &mu;A</div>
-                                                <div>200 kV</div>
-                                            </div>
-                                            =
-                                            <div className="inline-block text-center align-middle mx-1">
-                                                <div className="border-b border-black">25 &times; 10<sup>-6</sup></div>
-                                                <div>200 &times; 10<sup>3</sup></div>
-                                            </div>
-                                            = 125 pS
-                                        </div>
-                                    </div>
-                                    
-                                    <p className="font-sans text-sm text-amber-800 bg-amber-50 p-2 rounded border border-amber-200">
-                                        <strong>Design Note:</strong> The instrument must handle the highest conductance requirement. Thus, we design for <strong>125 pS</strong>.
-                                    </p>
-                                </div>
-
-                                <strong className="font-sans text-slate-700 block mt-4">2. Calculation of Capacitance (<i className="font-serif">C<sub>m</sub></i>):</strong>
-                                <div className="pl-4 border-l-2 border-indigo-100 space-y-2">
-                                    <p>Assuming angular frequency &omega; for <i className="font-serif">N</i> = 1500 rpm:</p>
-                                    <div className="text-lg">
-                                        &omega; = 
-                                        <div className="inline-block text-center align-middle mx-1">
-                                            <div className="border-b border-black">2&pi;<i>N</i></div>
-                                            <div>60</div>
-                                        </div>
-                                        = 157 rad/s
-                                    </div>
-                                    <p>Using the relation <i>I/V</i> = <i>C<sub>m</sub> &omega;</i>:</p>
-                                    <div className="text-lg">
-                                        <i>C<sub>m</sub></i> = 
-                                        <div className="inline-block text-center align-middle mx-1">
-                                            <div className="border-b border-black">125 &times; 10<sup>-12</sup></div>
-                                            <div>157</div>
-                                        </div>
-                                    </div>
+                                <div class="bg-red-50 p-3 rounded">
+                                    <h5 class="font-bold text-red-800 text-sm">Negative Impacts / Concerns</h5>
+                                    <ul class="list-disc pl-4 text-xs text-slate-700 mt-1">
+                                        <li><strong>Land Use:</strong> Large utility-scale farms require vast land.</li>
+                                        <li><strong>Material Toxicity:</strong> PV manufacturing involves cadmium, lead.</li>
+                                        <li><strong>Visual Impact:</strong> Glare from mirrors/panels.</li>
+                                    </ul>
                                 </div>
                             </div>
-
-                            {/* Result */}
-                            <div className="mt-6 bg-green-50 border border-green-200 rounded p-4 text-center">
-                                <span className="font-sans text-green-800 font-bold block mb-1">Final Design Value</span>
-                                <span className="text-2xl text-green-900 font-bold">
-                                    <i>C<sub>m</sub></i> &approx; 0.8 pF
-                                </span>
-                                <p className="text-sm text-green-700 mt-2 font-sans">
-                                    (Required Active Capacitance)
-                                </p>
+                            <p class="text-sm text-slate-600 mt-2">Overall, the lifecycle carbon footprint is significantly lower than fossil fuels.</p>
+                        </div>`
+                    }
+                ]
+            },
+            {
+                id: "b12", number: 12, question: "PV Systems & Solar Variation",
+                subQuestions: [
+                    {
+                        id: "b12-a",
+                        label: "(a) Explain the various types of Photo Voltaic (PV) Systems",
+                        answer: `
+                        <div class="space-y-4">
+                            <div class="border-l-4 border-blue-500 pl-3">
+                                <h5 class="font-bold text-slate-800">1. Stand-Alone (Off-Grid) Systems</h5>
+                                <p class="text-sm text-slate-700">Operates independently of the utility grid.<br/><strong>Components:</strong> PV Array, Battery Bank, Charge Controller, Inverter.<br/><strong>Use:</strong> Remote cabins, satellites.</p>
                             </div>
-                        </div>
-                    </div>
-                )
+                            <div class="border-l-4 border-green-500 pl-3">
+                                <h5 class="font-bold text-slate-800">2. Grid-Connected (On-Grid) Systems</h5>
+                                <p class="text-sm text-slate-700">Connected directly to the utility grid. No battery required.<br/><strong>Operation:</strong> Net Metering allows excess power to be fed to grid.</p>
+                            </div>
+                            <div class="border-l-4 border-orange-500 pl-3">
+                                <h5 class="font-bold text-slate-800">3. Hybrid Systems</h5>
+                                <p class="text-sm text-slate-700">Combines PV with another source like Diesel Gen-set or Wind.<br/><strong>Advantage:</strong> Increases reliability.</p>
+                            </div>
+                        </div>`
+                    },
+                    {
+                        id: "b12-b",
+                        label: "(b) What are the reasons for variation in the amount of solar energy reaching earth surface.",
+                        answer: `
+                        <div class="space-y-3">
+                            <p class="text-sm text-slate-700">Reasons for variation include:</p>
+                            <ul class="list-decimal pl-5 text-sm text-slate-700 space-y-2">
+                                <li><strong>Earth-Sun Geometry (Cosine Law):</strong> Angle of incidence changes with time, season, and latitude.</li>
+                                <li><strong>Atmospheric Attenuation:</strong>
+                                    <ul class="list-disc pl-5 mt-1 text-slate-600">
+                                        <li><strong>Absorption:</strong> Ozone absorbs UV; CO2 absorbs IR.</li>
+                                        <li><strong>Scattering:</strong> Dust and gas molecules scatter light.</li>
+                                        <li><strong>Reflection:</strong> Clouds reflect light back to space.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Day Length:</strong> Seasonal tilt (23.5°) affects sunshine hours.</li>
+                                <li><strong>Air Mass (AM):</strong> Path length through the atmosphere.</li>
+                            </ul>
+                        </div>`
+                    }
+                ]
+            },
+            {
+                id: "b13", number: 13, question: "Solar Components & Hydro Turbines",
+                subQuestions: [
+                    {
+                        id: "b13-a",
+                        label: "(a) Explain in detail about the construction of solar cell, solar module and solar array.",
+                        answer: `
+                        <div class="space-y-4">
+                            ${PVHierarchyDiagram}
+                            <div class="space-y-3 text-sm text-slate-700">
+                                <div><strong class="text-blue-700">1. Solar Cell (Basic Unit):</strong><p>Semiconductor device (Silicon) with P-N junction. Generates ~0.5V.</p></div>
+                                <div><strong class="text-blue-700">2. Solar Module (Panel):</strong><p>Cells connected in <strong>series</strong> to increase voltage. Example: 36 cells = 12V module.</p></div>
+                                <div><strong class="text-blue-700">3. Solar Array:</strong><p>Modules connected in series/parallel strings to match Inverter/Load requirements.</p></div>
+                            </div>
+                        </div>`
+                    },
+                    {
+                        id: "b13-b",
+                        label: "(b) Demonstrate the following Impulse turbine: (i) Pelton (ii) Turgo turbine",
+                        answer: `
+                        <div class="space-y-4">
+                            ${PeltonWheelDiagram}
+                            <div class="space-y-4">
+                                <div class="bg-slate-50 p-3 rounded">
+                                    <h5 class="font-bold text-slate-800">(i) Pelton Wheel</h5>
+                                    <ul class="list-disc pl-5 text-sm text-slate-700">
+                                        <li><strong>Type:</strong> Tangential flow impulse turbine. High Head.</li>
+                                        <li><strong>Construction:</strong> Runner with double-hemispherical buckets. Nozzle directs jet tangentially.</li>
+                                        <li><strong>Working:</strong> Jet strikes splitter ridge, splits, turns ~165°, transferring kinetic energy.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-slate-50 p-3 rounded">
+                                    <h5 class="font-bold text-slate-800">(ii) Turgo Turbine</h5>
+                                    <ul class="list-disc pl-5 text-sm text-slate-700">
+                                        <li><strong>Type:</strong> Modification of Pelton. Medium Head.</li>
+                                        <li><strong>Difference:</strong> Jet strikes runner at an angle (20°). Handles higher flow.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>`
+                    }
+                ]
+            },
+            {
+                id: "b14", number: 14, question: "Biogas & Geothermal Cycles",
+                subQuestions: [
+                    {
+                        id: "b14-a",
+                        label: "(a) Discuss the following methods of biogas generation: (i) Gasification (ii) Anaerobic Digestion",
+                        answer: `
+                        <div class="space-y-4">
+                            <div>
+                                <h5 class="font-bold text-emerald-800">(i) Gasification (Thermochemical)</h5>
+                                <p class="text-sm text-slate-700">Conversion of biomass into combustible gas (Syngas) by partial oxidation at high temps (700-1000°C).</p>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-emerald-800">(ii) Anaerobic Digestion (Biochemical)</h5>
+                                <p class="text-sm text-slate-700">Microbial breakdown of organic matter in absence of oxygen.</p>
+                                <div class="bg-emerald-50 p-3 rounded mt-2 border border-emerald-100">
+                                    <strong class="text-xs">Stages:</strong>
+                                    <ol class="list-decimal pl-5 text-xs text-slate-700">
+                                        <li><strong>Hydrolysis:</strong> Breakdown of complex fats/proteins.</li>
+                                        <li><strong>Acidogenesis:</strong> Formation of volatile fatty acids.</li>
+                                        <li><strong>Methanogenesis:</strong> Methanogens convert acids to Methane.</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>`
+                    },
+                    {
+                        id: "b14-b",
+                        label: "(b) Describe in detail the operation dry binary cycle geothermal power plant.",
+                        answer: `
+                        <div class="space-y-4">
+                            <div class="bg-orange-50 p-3 rounded text-sm text-slate-800 border-l-4 border-orange-400"><strong>Context:</strong> Used for moderate temperatures (100°C - 170°C).</div>
+                            <h4 class="font-bold text-slate-800">Operation Steps:</h4>
+                            <ol class="list-decimal pl-5 text-sm text-slate-700 space-y-2">
+                                <li><strong>Heat Exchanger:</strong> Hot brine heats a secondary "Binary" fluid (e.g., Isobutane) in a closed loop.</li>
+                                <li><strong>Vaporization:</strong> The binary fluid vaporizes due to heat transfer.</li>
+                                <li><strong>Power Generation:</strong> Vapor drives the turbine.</li>
+                                <li><strong>Condensation:</strong> Vapor is cooled and pumped back.</li>
+                                <li><strong>Re-injection:</strong> Cooled brine is injected back into earth.</li>
+                            </ol>
+                        </div>`
+                    }
+                ]
+            },
+            {
+                id: "b15", number: 15, question: "Hydro Storage & Biomass",
+                subQuestions: [
+                    {
+                        id: "b15-a",
+                        label: "(a) Describe in detail the operation pumped storage hydro power plant",
+                        answer: `
+                        <div class="space-y-4">
+                            ${PumpedStorageDiagram}
+                            <p class="text-sm text-slate-700">Acts as a giant battery using two reservoirs at different elevations.</p>
+                            <h4 class="font-bold text-slate-800 mt-2">Modes:</h4>
+                            <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                                <li><strong>Generating (Peak):</strong> Water flows Upper &rarr; Lower.</li>
+                                <li><strong>Pumping (Off-Peak):</strong> Excess grid power pumps water Lower &rarr; Upper.</li>
+                            </ul>
+                        </div>`
+                    },
+                    {
+                        id: "b15-b",
+                        label: "(b) Describe in detail how biomass conversion takes place.",
+                        answer: `
+                        <div class="space-y-4">
+                            <div class="space-y-3">
+                                <div class="border border-slate-200 rounded p-3">
+                                    <h5 class="font-bold text-emerald-700 text-sm">1. Thermochemical</h5>
+                                    <ul class="list-disc pl-5 text-xs text-slate-600 mt-1"><li>Combustion, Gasification, Pyrolysis.</li></ul>
+                                </div>
+                                <div class="border border-slate-200 rounded p-3">
+                                    <h5 class="font-bold text-emerald-700 text-sm">2. Biochemical</h5>
+                                    <ul class="list-disc pl-5 text-xs text-slate-600 mt-1"><li>Anaerobic Digestion, Fermentation.</li></ul>
+                                </div>
+                                <div class="border border-slate-200 rounded p-3">
+                                    <h5 class="font-bold text-emerald-700 text-sm">3. Physical/Chemical</h5>
+                                    <ul class="list-disc pl-5 text-xs text-slate-600 mt-1"><li>Extraction (Biodiesel), Densification.</li></ul>
+                                </div>
+                            </div>
+                        </div>`
+                    }
+                ]
             }
-            ]
-        }
         ];
 
         const partCQuestions = [
-        {
-            id: "c16", number: 16, part: "C",
-            question: "Resonant Transformers & Measurement",
-            answer: null,
-            subQuestions: [
             {
-                label: "(a) What is Tesla coil? How is damped high frequency oscillations obtained from a Tesla coil?",
-                question: "Tesla Coil Operation",
-                answer: (
-                <div className="space-y-4">
-                    <TeslaCoilDiagram />
-                    <p className="text-sm text-slate-700">
-                    A Tesla Coil is a double-tuned resonant transformer that generates very high voltages at high frequencies (hundreds of kHz).
-                    </p>
-                    
-                    <h4 className="font-bold text-slate-800 mt-2">Process of Oscillation:</h4>
-                    <ol className="list-decimal pl-5 text-sm text-slate-700 space-y-2">
-                    <li><strong>Charging:</strong> The primary capacitor (Cp) charges from a high voltage source (transformer) until the voltage breaks down the spark gap.</li>
-                    <li><strong>Primary Resonance:</strong> When the gap fires, Cp discharges through the primary coil (L1). This forms a resonant LC circuit oscillating at <span>f = 1 / 2&pi;&radic;(L1 Cp)</span>.</li>
-                    <li><strong>Energy Transfer:</strong> The oscillating magnetic field couples to the secondary coil (L2). The secondary is also tuned to the same frequency (using its self-capacitance and top load).</li>
-                    <li><strong>Voltage Magnification:</strong> Energy sloshes back and forth between primary and secondary. Due to the high Q-factor and turns ratio, voltage builds up massively on the secondary.</li>
-                    <li><strong>Damped Oscillations:</strong> The spark gap eventually extinguishes as energy is dissipated (resistance, air streamers). This results in a decaying (damped) sinusoidal wave train. The cycle repeats at the mains frequency (or charging rate).</li>
-                    </ol>
-                </div>
-                )
-            },
-            {
-                label: "(b) Briefly explain sphere gap arrangements for measurement of High DC, AC and Impulse voltages.",
-                question: "Sphere Gap Measurement",
-                answer: (
-                <div className="space-y-4">
-                    <div className="flex justify-center p-4 bg-slate-50 border border-slate-200 rounded">
-                        <img 
-                            src="https://i.postimg.cc/7YW6C47q/image.png" 
-                            alt="Sphere Gap Measurement" 
-                            className="w-full max-w-md h-auto object-contain rounded"
-                        />
-                    </div>
-
-                    <h4 className="font-bold text-slate-800">Arrangement:</h4>
-                    <p className="text-sm text-slate-700">
-                    Consists of two identical metallic spheres separated by a gap 'S'.
-                    <br/><strong>Vertical Arrangement:</strong> Lower sphere is grounded, upper sphere is HV. (Most common).
-                    <br/><strong>Horizontal Arrangement:</strong> Both spheres insulated, potential applied differentially.
-                    </p>
-
-                    <h4 className="font-bold text-slate-800 mt-2">Measurement Principle:</h4>
-                    <ul className="list-disc pl-5 text-sm text-slate-700 space-y-1">
-                    <li><strong>Calibration:</strong> The breakdown voltage (V) depends on the gap length (S) and sphere diameter (D). Standard tables (IEC 60052) map Gap vs Breakdown Voltage.</li>
-                    <li><strong>Peak Measurement:</strong> Sphere gaps inherently measure the <strong>Peak Value</strong> of the voltage wave (AC, DC, or Impulse).</li>
-                    <li><strong>Correction:</strong> Values from tables refer to standard temperature (20°C) and pressure (760 mmHg). Corrections must be applied for actual air density: <span>V = V<sub>std</sub> &times; k<sub>d</sub></span>.</li>
-                    </ul>
-                    
-                    <div className="bg-blue-50 p-2 rounded text-xs text-blue-800 mt-2">
-                    <strong>Impulse Measurement:</strong> For impulse voltages, the "50% flashover voltage" is used. Multiple shots are applied, and the voltage at which 50% result in flashover is taken as the measure.
-                    </div>
-                </div>
-                )
+                id: "c16", number: 16, question: "Advanced Systems",
+                subQuestions: [
+                    {
+                        id: "c16-a",
+                        label: "(a) Evaluate the various connections of Solar Photovoltaic system with neat sketch.",
+                        answer: `
+                        <div class="space-y-4">
+                            <div class="grid gap-4 md:grid-cols-2">
+                                <div class="bg-white border border-slate-200 p-3 rounded">
+                                    <h5 class="font-bold text-blue-700 text-sm mb-2">1. Series Connection (String)</h5>
+                                    <svg viewBox="0 0 150 100" class="w-full h-24 mb-2">
+                                        <rect x="10" y="40" width="30" height="20" fill="#3b82f6"/>
+                                        <rect x="60" y="40" width="30" height="20" fill="#3b82f6"/>
+                                        <rect x="110" y="40" width="30" height="20" fill="#3b82f6"/>
+                                        <line x1="40" y1="50" x2="60" y2="50" stroke="black"/>
+                                        <line x1="90" y1="50" x2="110" y2="50" stroke="black"/>
+                                        <text x="75" y="80" font-size="10" text-anchor="middle">V_total = V1 + V2 + V3</text>
+                                    </svg>
+                                    <p class="text-xs text-slate-600">Voltage adds up. Current constant.</p>
+                                </div>
+                                <div class="bg-white border border-slate-200 p-3 rounded">
+                                    <h5 class="font-bold text-blue-700 text-sm mb-2">2. Parallel Connection</h5>
+                                    <svg viewBox="0 0 150 100" class="w-full h-24 mb-2">
+                                        <rect x="30" y="10" width="30" height="20" fill="#3b82f6"/>
+                                        <rect x="30" y="40" width="30" height="20" fill="#3b82f6"/>
+                                        <rect x="30" y="70" width="30" height="20" fill="#3b82f6"/>
+                                        <line x1="60" y1="20" x2="80" y2="20" stroke="black"/> <line x1="80" y1="20" x2="80" y2="80" stroke="black"/>
+                                        <line x1="60" y1="50" x2="80" y2="50" stroke="black"/>
+                                        <line x1="60" y1="80" x2="80" y2="80" stroke="black"/>
+                                        <text x="110" y="50" font-size="10" text-anchor="middle">I_total = &Sigma; I</text>
+                                    </svg>
+                                    <p class="text-xs text-slate-600">Current adds up. Voltage constant.</p>
+                                </div>
+                            </div>
+                        </div>`
+                    },
+                    {
+                        id: "c16-b",
+                        label: "(b) Explain with a neat sketch explain the operation flashed steam geothermal power plant",
+                        answer: `
+                        <div class="space-y-4">
+                            ${GeothermalDiagram}
+                            <h4 class="font-bold text-slate-800 mt-2">Operation:</h4>
+                            <ol class="list-decimal pl-5 text-sm text-slate-700 space-y-2">
+                                <li><strong>Extraction:</strong> High-pressure hot water pumped from well.</li>
+                                <li><strong>Flashing:</strong> Sudden pressure drop in Flash Tank causes water to boil explosively into steam.</li>
+                                <li><strong>Separation:</strong> Steam separated from brine.</li>
+                                <li><strong>Generation:</strong> Steam drives turbine.</li>
+                                <li><strong>Re-injection:</strong> Brine returned to reservoir.</li>
+                            </ol>
+                        </div>`
+                    }
+                ]
             }
-            ]
-        }
         ];
 
-        // --- Main App Component ---
+        // --- Logic ---
 
-        function CAT2Solution() {
-            const [activeTab, setActiveTab] = useState('A');
-            const [openItems, setOpenItems] = useState({});
-
-            const toggleItem = (id) => {
-                setOpenItems(prev => ({ ...prev, [id]: !prev[id] }));
-            };
-
-            const renderContent = () => {
-                if (activeTab === 'A') {
-                return (
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
-                    {partAQuestions.map((q) => (
-                        <Card key={q.id} className="hover:shadow-lg transition-shadow">
-                        <div className="p-4">
-                            <div className="flex justify-between items-start mb-2">
-                            <Badge color="blue">Q{q.number}</Badge>
-                            <span className="text-xs text-slate-400 font-mono">2 Marks</span>
-                            </div>
-                            <h3 className="font-semibold text-slate-800 mb-2 text-sm">{q.question}</h3>
-                            <div className="text-sm text-slate-600 border-t pt-2 mt-2">{q.answer}</div>
-                        </div>
-                        </Card>
-                    ))}
+        function renderPartA() {
+            const container = document.getElementById('content-area');
+            let html = `<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">`;
+            
+            partAQuestions.forEach(q => {
+                html += `
+                <div class="bg-white rounded-xl shadow-md overflow-hidden border border-emerald-100 hover:shadow-lg transition-shadow p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">Q${q.number}</span>
+                        <span class="text-xs text-slate-400 font-mono">2 Marks</span>
                     </div>
-                );
-                }
-
-                const questions = activeTab === 'B' ? partBQuestions : partCQuestions;
-
-                return (
-                <div className="space-y-6">
-                    {questions.map((q) => (
-                    <Card key={q.id} className="border-l-4 border-l-indigo-500">
-                        <div className="p-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
-                        <div>
-                            <h2 className="text-lg font-bold text-slate-800">Question {q.number}</h2>
-                            <p className="text-xs text-slate-500 uppercase tracking-wide">{q.question}</p>
-                        </div>
-                        <Badge color="purple">{activeTab === 'C' ? '15 Marks' : '13 Marks'}</Badge>
-                        </div>
-                        
-                        <div className="p-4 space-y-4">
-                        {q.subQuestions?.map((sub, idx) => (
-                            <div key={idx} className="border border-slate-200 rounded-lg overflow-hidden">
-                            <button 
-                                onClick={() => toggleItem(`${q.id}-${idx}`)}
-                                className="w-full flex justify-between items-center p-3 bg-white hover:bg-slate-50 text-left transition-colors"
-                            >
-                                <span className="font-medium text-slate-800 text-sm md:text-base pr-4">{sub.label}</span>
-                                {openItems[`${q.id}-${idx}`] ? <ChevronUp size={20} className="text-indigo-500"/> : <ChevronDown size={20} className="text-slate-400"/>}
-                            </button>
-                            
-                            {openItems[`${q.id}-${idx}`] && (
-                                <div className="p-4 bg-white border-t border-slate-100 animate-in fade-in slide-in-from-top-2 duration-200">
-                                {sub.answer}
-                                </div>
-                            )}
-                            </div>
-                        ))}
-                        </div>
-                    </Card>
-                    ))}
-                </div>
-                );
-            };
-
-            return (
-                <div className="min-h-screen bg-slate-100 font-sans text-slate-900 pb-12">
-                {/* Header */}
-                <header className="bg-indigo-700 text-white shadow-lg">
-                    <div className="max-w-5xl mx-auto px-4 py-6">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
-                        <h1 className="text-2xl font-bold tracking-tight">SRM Valliammai Engineering College</h1>
-                        <p className="text-indigo-200 text-sm mt-1">Dept of EEE | Continuous Assessment Test - 2</p>
-                        </div>
-                        <div className="flex gap-2 text-xs font-mono bg-indigo-800 p-2 rounded-lg border border-indigo-600">
-                        <div className="px-3 border-r border-indigo-600">
-                            <span className="block text-indigo-300">Total</span>
-                            <span className="font-bold text-lg">100m</span>
-                        </div>
-                        <div className="px-3">
-                            <span className="block text-indigo-300">Duration</span>
-                            <span className="font-bold text-lg">3 Hrs</span>
-                        </div>
-                        </div>
-                    </div>
-                    </div>
-                </header>
-
-                {/* Main Content */}
-                <main className="max-w-5xl mx-auto px-4 py-8">
-                    
-                    {/* Navigation Tabs */}
-                    <div className="flex space-x-2 mb-8 bg-white p-1 rounded-xl shadow-sm w-fit mx-auto md:mx-0">
-                    {['A', 'B', 'C'].map((part) => (
-                        <button
-                        key={part}
-                        onClick={() => setActiveTab(part)}
-                        className={`
-                            px-6 py-2 rounded-lg text-sm font-bold transition-all duration-200
-                            ${activeTab === part 
-                            ? 'bg-indigo-600 text-white shadow-md transform scale-105' 
-                            : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'}
-                        `}
-                        >
-                        Part {part}
-                        </button>
-                    ))}
-                    </div>
-
-                    {/* Dynamic Content Area */}
-                    <div className="animate-in fade-in duration-300">
-                        {renderContent()}
-                    </div>
-
-                </main>
-                
-                <footer className="text-center text-slate-400 text-xs py-8">
-                    <p>Generated by AI Assistant • Educational Purpose Only</p>
-                </footer>
-                </div>
-            );
+                    <h3 class="font-semibold text-slate-800 mb-2 text-sm">${q.question}</h3>
+                    <div class="text-sm text-slate-600 border-t border-emerald-50 pt-2 mt-2">${q.answer}</div>
+                </div>`;
+            });
+            
+            html += `</div>`;
+            container.innerHTML = html;
         }
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<CAT2Solution />);
+        function renderStructuredPart(questions, partName) {
+            const container = document.getElementById('content-area');
+            const markLabel = partName === 'C' ? '15 Marks' : '13 Marks';
+            
+            let html = `<div class="space-y-6">`;
+            
+            questions.forEach(q => {
+                html += `
+                <div class="bg-white rounded-xl shadow-md overflow-hidden border border-emerald-100 border-l-4 border-l-emerald-500">
+                    <div class="p-4 bg-emerald-50 border-b border-emerald-100 flex justify-between items-center">
+                        <div>
+                            <h2 class="text-lg font-bold text-emerald-900">Question ${q.number}</h2>
+                            <p class="text-xs text-emerald-700 uppercase tracking-wide">${q.question}</p>
+                        </div>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">${markLabel}</span>
+                    </div>
+                    
+                    <div class="p-4 space-y-4">
+                        ${q.subQuestions.map(sub => `
+                            <div class="border border-slate-200 rounded-lg overflow-hidden">
+                                <button onclick="toggleAccordion('${sub.id}')" 
+                                    class="w-full flex justify-between items-center p-3 bg-white hover:bg-slate-50 text-left transition-colors focus:outline-none">
+                                    <span class="font-medium text-slate-800 text-sm md:text-base pr-4">${sub.label}</span>
+                                    <i id="icon-${sub.id}" data-lucide="chevron-down" class="text-slate-400 w-5 h-5 transition-transform duration-300"></i>
+                                </button>
+                                
+                                <div id="content-${sub.id}" class="accordion-content bg-white border-t border-slate-100">
+                                    <div class="p-4">
+                                        ${sub.answer}
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
+            });
+            
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            const isOpen = content.classList.contains('open');
+            
+            if (isOpen) {
+                content.classList.remove('open');
+                icon.style.transform = 'rotate(0deg)';
+                icon.classList.remove('text-emerald-500');
+                icon.classList.add('text-slate-400');
+            } else {
+                content.classList.add('open');
+                icon.style.transform = 'rotate(180deg)';
+                icon.classList.remove('text-slate-400');
+                icon.classList.add('text-emerald-500');
+            }
+        }
+
+        function switchTab(tab) {
+            // Update UI State
+            ['A', 'B', 'C'].forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === tab) {
+                    btn.classList.add('bg-emerald-600', 'text-white', 'shadow-md', 'scale-105');
+                    btn.classList.remove('text-slate-500', 'hover:bg-slate-100', 'hover:text-slate-700');
+                } else {
+                    btn.classList.remove('bg-emerald-600', 'text-white', 'shadow-md', 'scale-105');
+                    btn.classList.add('text-slate-500', 'hover:bg-slate-100', 'hover:text-slate-700');
+                }
+            });
+
+            // Render Content
+            if (tab === 'A') {
+                renderPartA();
+            } else if (tab === 'B') {
+                renderStructuredPart(partBQuestions, 'B');
+            } else {
+                renderStructuredPart(partCQuestions, 'C');
+            }
+
+            // Refresh Icons for new content
+            lucide.createIcons();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            switchTab('A');
+            lucide.createIcons();
+        });
+
     </script>
 </body>
 </html>
